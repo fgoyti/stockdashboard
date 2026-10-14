@@ -6,7 +6,9 @@
  *   - 7d      → PeriodComparisonView (% performance lines, return bars, table)
  *   - quarter → PeriodComparisonView (same layout over ~90 days)
  *
- * Time-window selection is managed locally via useState.
+ * Time-window selection and the optional user-selected company ticker are
+ * managed locally via useState. The user-company feature is purely additive —
+ * DEFAULT_COMPANIES and all existing sub-views are untouched.
  */
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
@@ -14,6 +16,8 @@ import type { TimeWindow } from '../../types/finance.ts';
 import { DEFAULT_COMPANIES } from '../../constants/companies.ts';
 import { TodayView } from './TodayView.tsx';
 import { PeriodComparisonView } from './PeriodComparisonView.tsx';
+import { UserCompanyChart } from './UserCompanyChart.tsx';
+import { CompanySearchPanel } from '../shared/CompanySearchPanel.tsx';
 
 const TIME_WINDOWS: { value: TimeWindow; label: string }[] = [
   { value: 'day',     label: 'Today' },
@@ -60,6 +64,7 @@ const sectionTitleStyle: CSSProperties = {
 
 export function DashboardPage() {
   const [window, setWindow] = useState<TimeWindow>('day');
+  const [userTicker, setUserTicker] = useState<string | null>(null);
 
   return (
     <div style={pageStyle}>
@@ -98,6 +103,19 @@ export function DashboardPage() {
           <PeriodComparisonView companies={DEFAULT_COMPANIES} window="quarter" periodLabel="quarter" />
         </>
       )}
+
+      {/* ── User-selected company chart ── */}
+      <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <h2 style={sectionTitleStyle}>Explore a Company</h2>
+        <CompanySearchPanel
+          onSubmit={setUserTicker}
+          onClear={() => setUserTicker(null)}
+          currentTicker={userTicker}
+        />
+        {userTicker && (
+          <UserCompanyChart ticker={userTicker} window={window} />
+        )}
+      </div>
     </div>
   );
 }

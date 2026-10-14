@@ -5,7 +5,10 @@
  * Adding a new company:
  *   1. Add an entry to MOCK_QUOTES (with realistic price, change, volume, marketCap)
  *   2. Add a matching entry to MOCK_HISTORY using syntheticHistory()
- *   3. Add the company to constants/companies.ts
+ *   3. Add the company to constants/companies.ts (only needed for DEFAULT_COMPANIES)
+ *
+ * AMZN and GOOGL are included here so the user-selected company feature can be
+ * exercised in mock / test mode without hitting the error path.
  */
 import type { Quote, HistoryPoint } from '../types/finance.ts';
 
@@ -34,6 +37,16 @@ export const MOCK_QUOTES: Record<string, Quote> = {
     ticker: 'CRM',  name: 'Salesforce',
     price: 318.20,  change: -1.85, changePercent: -0.58,
     volume: 5_900_000,   marketCap: 308_000_000_000,
+  },
+  AMZN: {
+    ticker: 'AMZN', name: 'Amazon',
+    price: 228.50,  change:  2.75, changePercent:  1.22,
+    volume: 32_000_000,  marketCap: 2_410_000_000_000,
+  },
+  GOOGL: {
+    ticker: 'GOOGL', name: 'Alphabet',
+    price: 194.30,  change: -0.85, changePercent: -0.44,
+    volume: 22_500_000,  marketCap: 2_380_000_000_000,
   },
 };
 
@@ -70,9 +83,11 @@ function syntheticHistory(baseTicker: string, days: number): HistoryPoint[] {
 }
 
 export const MOCK_HISTORY: Record<string, HistoryPoint[]> = {
-  IBM:  syntheticHistory('IBM',  90),
-  MSFT: syntheticHistory('MSFT', 90),
-  ORCL: syntheticHistory('ORCL', 90),
-  SAP:  syntheticHistory('SAP',  90),
-  CRM:  syntheticHistory('CRM',  90),
+  IBM:   syntheticHistory('IBM',   90),
+  MSFT:  syntheticHistory('MSFT',  90),
+  ORCL:  syntheticHistory('ORCL',  90),
+  SAP:   syntheticHistory('SAP',   90),
+  CRM:   syntheticHistory('CRM',   90),
+  AMZN:  syntheticHistory('AMZN',  90),
+  GOOGL: syntheticHistory('GOOGL', 90),
 };
